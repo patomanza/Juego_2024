@@ -9,8 +9,15 @@ def girar_imagenes(lista_original, flip_x, flip_y):
     
     return lista_girada
 
-fondo = pygame.image.load("source\Recursos\Background.png")
+def reescalar_imagen(lista_imagenes, tamaño):
+    for i in range(len(lista_imagenes)):
+        lista_imagenes[i] = pygame.transform.scale(lista_imagenes[i],tamaño)
+
+fondo = pygame.image.load("source\Recursos\Back.png")
 fondo = pygame.transform.scale(fondo,SCREEN_SIZE)
+
+mapa = pygame.image.load("source\Recursos\map3.png")
+mapa = pygame.transform.scale(mapa,SCREEN_SIZE)
 
 start_button = pygame.image.load("source\Recursos\Botones\Start_Button.png")
 rect_start_button = start_button.get_rect()
@@ -53,3 +60,13 @@ personaje_salta = [pygame.image.load("source\Recursos\Personaje\jump_1.png"),
                    pygame.image.load("source\Recursos\Personaje\jump_2.png")]
 
 personaje_salta_izq = girar_imagenes(personaje_salta,True,False)
+
+
+
+dict_animaciones = {'quieto_der': personaje_idle,
+                    'quieto_izq': personaje_idle_izq,
+                    'corre_der': personaje_corre,
+                    'corre_izq': personaje_corre_izq,
+                    'salta_der': personaje_salta,
+                    'salta_izq': personaje_salta_izq
+                    }

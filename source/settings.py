@@ -1,5 +1,6 @@
 import pygame
 
+
 WIDTH = 800
 HEIGHT = 600
 FPS = 60
@@ -18,14 +19,30 @@ MAGENTA = (255,0,255)
 CUSTOM = (220,100,255)
 
 personaje_pos = pygame.Rect(202,480,35,45)
+
+is_moving = False
+contador_pasos = 0
 anim_index = 0
 anim_idle_speed = 10  # Ajusta este valor para cambiar la velocidad de la animación (más alto es más lento)
 anim_correr_speed = 5
 anim_counter = 0
-velocidad = 2
-gravedad = 2
-potencia_salto = -20
+velocidad_x = 2
+
+gravedad = 10
+potencia_salto = 15
+desplazamiento_y = potencia_salto
+
+is_jumping = False
+
+
+posicion_y = 480
+posicion_x = 202
+
 direccion = 'derecha'
+
+
+
+
 
 button_width,button_height = 150,50
 button_x = 325

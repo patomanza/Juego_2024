@@ -14,4 +14,15 @@ def obtener_rectangulos(principal: Rect):
     
     return diccionario_rectangulo
 
-
+def limites_pantalla(pantalla):
+    diccionario_pantalla = {}
+    
+    rectangulo_pantalla = pantalla.get_rect()
+    
+    diccionario_pantalla["main"] = rectangulo_pantalla
+    diccionario_pantalla["bottom"] = Rect(rectangulo_pantalla.left, rectangulo_pantalla.bottom - 5, rectangulo_pantalla.width, 5)
+    diccionario_pantalla["right"] = Rect(rectangulo_pantalla.right - 5, rectangulo_pantalla.top, 5, rectangulo_pantalla.height)
+    diccionario_pantalla["left"] = Rect(rectangulo_pantalla.left, rectangulo_pantalla.top, 5, rectangulo_pantalla.height)
+    diccionario_pantalla["top"] = Rect(rectangulo_pantalla.left, rectangulo_pantalla.top , rectangulo_pantalla.width, 5)
+    
+    return diccionario_pantalla
