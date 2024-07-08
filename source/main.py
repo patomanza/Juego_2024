@@ -9,6 +9,7 @@ from modo_debug import *
 
 
 
+
 #PISO 800*60
 
 #https://www.onlinegdb.com/lSg2Dbq1R
@@ -16,6 +17,7 @@ from modo_debug import *
 def salir_juego():
     pygame.quit()
     exit()
+    
 
 
 
@@ -107,34 +109,20 @@ def pantalla_fin(botones, puntuacion_final):
     
     pygame.mixer.music.stop()
 
-def mover_personaje(rectangulo_pj,velocidad):
-    rectangulo_pj.x += velocidad
-
-def animar(animaciones,pantalla,rectangulo_pj):
-    global contador_pasos
-    largo_animaciones = len(animaciones)
+def aplicar_gravedad(salta:bool):
     
-    if contador_pasos >= largo_animaciones:
-        contador_pasos = 0
-    
-    
-    pantalla.blit(animaciones[contador_pasos],rectangulo_pj)
-    contador_pasos += 1
-
-def actualizar_pantalla(pantalla,que_hace,velocidad):
-    pantalla.blit(mapa,(0,0))
-    
-    match que_hace:
-        case 'corre_der':
-            animar(personaje_corre,pantalla,hitbox_personaje)
-            mover_personaje(hitbox_personaje,velocidad)
-        case 'corre_izq':
-            animar(personaje_corre_izq,pantalla, hitbox_personaje)
-            mover_personaje(hitbox_personaje,velocidad * -1)
-        case 'quieto_der':
-            animar(personaje_idle,pantalla,hitbox_personaje)
-        case 'quieto_izq':
-            animar(personaje_idle_izq,pantalla,hitbox_personaje)
+    if hitbox_personaje['main'].colliderect(lados_piso['top']):
+        desplazamiento_y = 0
+        gravedad = 2
+        salta = False
+        hitbox_personaje['main'].bottom = lados_piso['top'].bottom
+    elif salta:
+        desplazamiento_y += gravedad
+        for lado in hitbox_personaje:
+            hitbox_personaje[lado].y += desplazamiento_y
+        
+        if desplazamiento_y > velocidad_caida:
+            desplazamiento_y = velocidad_caida
 
 
 
@@ -143,34 +131,24 @@ def actualizar_pantalla(pantalla,que_hace,velocidad):
 
 pygame.init()
 
-
-
 #TEXTO
 fuente_score = pygame.font.SysFont(None,32)
 texto_score = fuente_score.render("Score: ",True, RED)
 score = 0
 
-
 # PISO
-textura_piso = pygame.image.load("source\Recursos\piso_orueba3.png")
-piso = textura_piso
-piso = pygame.Rect(0,510,WIDTH,90)
+piso = pygame.Rect(0,510,267,90)
 lados_piso = obtener_rectangulos(piso)
-
-
-
-
-
+piso_2 = pygame.Rect(347,510,53,90)
+lados_piso_2 = obtener_rectangulos(piso_2)
+piso_3 = pygame.Rect(480,510,420,90)
+lados_piso_3 = obtener_rectangulos(piso_3)
 
 
 #PATANLLA Y CLOCK FRAMES
 pantalla = pygame.display.set_mode(SCREEN_SIZE)
 pygame.display.set_caption("Primer Juego")
 clock = pygame.time.Clock()
-
-
-
-
 
 #TIEMPO
 timer_inicial = 30
@@ -179,41 +157,17 @@ timer_nivel = timer_inicial
 texto_timer = f"Tiempo: {timer_nivel}"
 pygame.time.set_timer(pygame.USEREVENT, 1000)
 
-
-
-
-
-
-
-
-#BOTONES INICIO Y FIN
-botones_inicio = [("start", start_button_rect), ("options", options_button_rect), ("exit", exit_button_rect)]
-botones_fin = [("start", start_button_rect), ("exit", exit_button_rect)]
-
-
-
-
-
-
 pantalla_inicio(botones_inicio)
 que_hace = 'quieto'
-
 
 is_running = True
 while is_running:
     clock.tick(FPS)
     
-    
     #bliteos pantalla
-    
-    
-    # pantalla.blit(fondo,(0,0))
     pantalla.blit(texto_score,(365,50))
-    # pantalla.blit(textura_piso,(0,360))
     pantalla.blit(mapa,(0,0))
-    
-    
-    
+    hitbox_personaje = obtener_rectangulos(personaje_pos)
     
     for evento in pygame.event.get():
         if evento.type == pygame.QUIT:
@@ -233,41 +187,37 @@ while is_running:
     
     keys = pygame.key.get_pressed()
     is_moving = False
-    is_jumping = False
+    
     
     #   MOVIMIENTO
     if keys[pygame.K_RIGHT] and hitbox_personaje["right"].x < rectangulos_pantalla["right"].right - velocidad_x:
         personaje_pos.x += velocidad_x
-        direccion = 'derecha'
         is_moving = True
+        direccion = 'derecha'
     elif keys[pygame.K_LEFT] and hitbox_personaje["left"].x > rectangulos_pantalla["left"].left + velocidad_x:
         personaje_pos.x -= velocidad_x
-        direccion = 'izquierda'
         is_moving = True
-    elif keys[pygame.K_SPACE]:
+        direccion = 'izquierda'
+    elif keys[pygame.K_UP] and not is_jumping:
         is_jumping = True
+        desplazamiento_y = potencia_salto
     
     
     
-    
-    hitbox_personaje = obtener_rectangulos(personaje_pos)
-    
-    
-    #ACA SE PARA MI PERSONAJE 
-    hitbox_personaje["main"].bottom = lados_piso["top"].bottom
+    # hitbox_personaje["main"].bottom = lados_piso["top"].bottom
     
     rectangulos_pantalla = limites_pantalla(pantalla)
-    
-    
-    
-    
-    # Actualización de la animació
     
     if is_moving:
         anim_counter += 1
         if anim_counter >= anim_correr_speed:
             anim_counter = 0
             anim_index = (anim_index + 1) % len(personaje_corre)
+    elif is_jumping:
+        anim_counter += 1
+        if anim_counter >= anim_saltar_speed:
+            anim_counter = 0
+            anim_index = (anim_index + 1) % len(personaje_salta)
     else:
         anim_counter += 1
         if anim_counter >= anim_idle_speed:
@@ -275,34 +225,62 @@ while is_running:
             anim_index = (anim_index + 1) % len(personaje_idle)
     
     
-    
-    
     #ANIMACION IDLE Y CORRER
-    if is_moving:
+    if is_moving and not is_jumping: 
         if direccion == 'derecha':
             pantalla.blit(personaje_corre[anim_index], personaje_pos.topleft)
         else:
             pantalla.blit(personaje_corre_izq[anim_index], personaje_pos.topleft)
+    elif is_jumping:
+        if direccion == 'derecha':
+            pantalla.blit(personaje_salta[anim_index],personaje_pos.topleft)
+        else: 
+            pantalla.blit(personaje_salta_izq[anim_index],personaje_pos.topleft)
     else:
         if direccion == 'derecha':
             pantalla.blit(personaje_idle[anim_index], personaje_pos.topleft)
         else:
             pantalla.blit(personaje_idle_izq[anim_index], personaje_pos.topleft)
     
-    if is_jumping:
-        posicion_y -= desplazamiento_y
-        desplazamiento_y -= gravedad
-        if desplazamiento_y < -potencia_salto:
-            is_jumping = False
-            desplazamiento_y = potencia_salto
-            pantalla.blit(personaje_salta[1],personaje_pos.topleft)
-        else:
-            pantalla.blit(personaje_idle[anim_index], personaje_pos.topleft)
+    
+    # control de gravedad
+    
+    if is_jumping and direccion == 'derecha':
+        print(is_jumping)
+        pantalla.blit(personaje_salta[anim_index],personaje_pos.topleft)
+        for lado in hitbox_personaje:
+            hitbox_personaje[lado].y += desplazamiento_y
+        
+        if desplazamiento_y + gravedad < velocidad_caida:
+            desplazamiento_y += gravedad
+    elif is_jumping and direccion == 'izquierda':
+        print(is_jumping)
+        pantalla.blit(personaje_salta_izq[anim_index],personaje_pos.topleft)
+        for lado in hitbox_personaje:
+            hitbox_personaje[lado].y += desplazamiento_y
+        
+        if desplazamiento_y + gravedad < velocidad_caida:
+            desplazamiento_y += gravedad
+    if hitbox_personaje['main'].colliderect(lados_piso['top']):
+        print(is_jumping)
+        desplazamiento_y = 0
+        gravedad = 1
+        is_jumping = False
+        hitbox_personaje['main'].bottom = lados_piso['top'].bottom
+    
+    
+    
     
     
     if get_modo():
         for lado in lados_piso:
             pygame.draw.rect(pantalla,"orange",lados_piso[lado],1)
+        
+        for lado in lados_piso_2:
+            pygame.draw.rect(pantalla,"orange",lados_piso_2[lado],1)
+        
+        for lado in lados_piso_3:
+            pygame.draw.rect(pantalla,"orange",lados_piso_3[lado],1)
         
         for lado in hitbox_personaje:
             pygame.draw.rect(pantalla, "red", hitbox_personaje[lado], 1)
