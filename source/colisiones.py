@@ -10,13 +10,10 @@ def detectar_colisiones(rec_1,rec_2):
         punto_en_rectangulo(rec_1.bottomleft, rec_2)):
         return True
     
-    
     if (punto_en_rectangulo(rec_2.topleft, rec_1) or
         punto_en_rectangulo(rec_2.topright, rec_1) or
         punto_en_rectangulo(rec_2.bottomright, rec_1) or
         punto_en_rectangulo(rec_2.bottomleft, rec_1)):
         return True
-    
-    
     
     return False

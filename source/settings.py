@@ -3,7 +3,7 @@ import pygame
 
 WIDTH = 800
 HEIGHT = 600
-FPS = 45
+FPS = 60
 
 SCREEN_SIZE = (WIDTH,HEIGHT)
 SCREEN_CENTER = (WIDTH //2,HEIGHT//2)
@@ -19,15 +19,17 @@ MAGENTA = (255,0,255)
 CUSTOM = (220,100,255)
 
 
-contador_pasos = 0
+
 anim_index = 0
 anim_idle_speed = 10  
 anim_correr_speed = 10
-anim_saltar_speed = 15
+anim_saltar_speed = 10
 anim_counter = 0
+anim_counter_salto = 0
+anim_index_salto = 0
 
 velocidad_x = 2
-posicion_y = 480
+posicion_y = 470
 posicion_x = 50
 direccion = 'derecha'
 
