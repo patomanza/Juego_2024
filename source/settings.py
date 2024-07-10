@@ -1,6 +1,5 @@
 import pygame
 
-
 WIDTH = 800
 HEIGHT = 600
 FPS = 60
@@ -18,29 +17,8 @@ CYAN = (0,255,255)
 MAGENTA = (255,0,255)
 CUSTOM = (220,100,255)
 
-
-
-anim_index = 0
-anim_idle_speed = 10  
-anim_correr_speed = 10
-anim_saltar_speed = 10
-anim_counter = 0
-anim_counter_salto = 0
-anim_index_salto = 0
-
-velocidad_x = 2
 posicion_y = 470
 posicion_x = 50
-direccion = 'derecha'
-
-gravedad = 0.5
-potencia_salto = -15
-velocidad_caida = 15
-desplazamiento_y = 0
-is_jumping = False
-
-personaje_pos = pygame.Rect(posicion_x,posicion_y,35,45)
-
 
 
 button_width,button_height = 150,50
@@ -57,3 +35,6 @@ exit_button_rect = pygame.Rect(button_x,exit_button_y,button_width,button_height
 
 botones_inicio = [("start", start_button_rect), ("options", options_button_rect), ("exit", exit_button_rect)]
 botones_fin = [("start", start_button_rect), ("exit", exit_button_rect)]
+
+
+

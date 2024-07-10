@@ -1,6 +1,5 @@
 from pygame import Rect
 
-
 def obtener_rectangulos(principal: Rect):
     diccionario_rectangulo = {}
     
@@ -26,3 +25,4 @@ def limites_pantalla(pantalla):
     diccionario_pantalla["top"] = Rect(rectangulo_pantalla.left, rectangulo_pantalla.top , rectangulo_pantalla.width, 5)
     
     return diccionario_pantalla
+
