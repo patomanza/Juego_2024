@@ -119,6 +119,14 @@ lizard_dispara = [pygame.image.load("source/Recursos/Enemigos/lizard shoots/liza
                       pygame.image.load("source/Recursos/Enemigos/lizard shoots/lizard_shoot_3.png"),
                       pygame.image.load("source/Recursos/Enemigos/lizard shoots/lizard_shoot_4.png")]
 
+bat = [pygame.image.load("source/Recursos/Enemigos/Bat/Bat_1.png"),
+       pygame.image.load("source/Recursos/Enemigos/Bat/Bat_2.png"),
+       pygame.image.load("source/Recursos/Enemigos/Bat/Bat_3.png"),
+       pygame.image.load("source/Recursos/Enemigos/Bat/Bat_4.png"),
+       pygame.image.load("source/Recursos/Enemigos/Bat/Bat_5.png")]
+
+bat_girado = girar_imagenes(bat,True,False)
+
 lizard_fireball = [pygame.image.load("source/Recursos/Enemigos/Fireball/fireball_1.png"),
                    pygame.image.load("source/Recursos/Enemigos/Fireball/fireball_2.png"),
                    pygame.image.load("source/Recursos/Enemigos/Fireball/fireball_3.png"),
@@ -131,17 +139,17 @@ fireball_explota = [pygame.image.load("source/Recursos/Enemigos/Fireball/explosi
 
 
 
-spikes = [pygame.image.load("source/Recursos/Trampas/Spikes/spike_1.png"),
-          pygame.image.load("source/Recursos/Trampas/Spikes/spike_2.png"),
-          pygame.image.load("source/Recursos/Trampas/Spikes/spike_3.png"),
-          pygame.image.load("source/Recursos/Trampas/Spikes/spike_4.png"),
-          pygame.image.load("source/Recursos/Trampas/Spikes/spike_5.png"),
-          pygame.image.load("source/Recursos/Trampas/Spikes/spike_6.png"),
-          pygame.image.load("source/Recursos/Trampas/Spikes/spike_7.png"),
-          pygame.image.load("source/Recursos/Trampas/Spikes/spike_8.png")]
+spikes = [pygame.image.load("source/Recursos/Trampas/Spikes/Spike_1.png"),
+          pygame.image.load("source/Recursos/Trampas/Spikes/Spike_1.png"),
+          pygame.image.load("source/Recursos/Trampas/Spikes/Spike_3.png"),
+          pygame.image.load("source/Recursos/Trampas/Spikes/Spike_4.png"),
+          pygame.image.load("source/Recursos/Trampas/Spikes/Spike_5.png"),
+          pygame.image.load("source/Recursos/Trampas/Spikes/Spike_6.png"),
+          pygame.image.load("source/Recursos/Trampas/Spikes/Spike_7.png"),
+          pygame.image.load("source/Recursos/Trampas/Spikes/Spike_8.png")]
 
 
-
+battery_powerup = pygame.image.load("source/Recursos/powerups/battery2.png")
 
 
 

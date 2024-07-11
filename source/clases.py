@@ -200,7 +200,7 @@ class Personaje:
                     self.is_jumping = False
                     self.hitbox_personaje["bottom"].bottom = plataforma.hitbox_plataforma['top'].bottom
                 self.is_jumping = False
-            
+    
     
     
     def actualizar_vida(self,pantalla):
@@ -294,7 +294,8 @@ class Disparo:
 
 
 class Enemigo:
-    def __init__(self,tamaño: tuple, posicion:tuple, tipo, imagenes_enemigo, limites_horizontales=(None, None), limites_verticales=(None, None)):
+    def __init__(self,tamaño: tuple, posicion:tuple, tipo, imagenes_enemigo, limites_horizontales=(None, None), limites_verticales=(None, None)
+                , puede_disparar=False, imagenes_bala=None, imagenes_explosion=None):
         self.posicion = pygame.Rect(posicion[0],posicion[1], tamaño[0],tamaño[1])  
         self.tipo = tipo  
         self.imagenes_enemigo = imagenes_enemigo 
@@ -309,13 +310,18 @@ class Enemigo:
         self.limites_horizontales = limites_horizontales
         self.limites_verticales = limites_verticales
         
-        self.lista_proyectiles = []
-        self.puede_disparar = True
+        
+        self.imagenes_bala = imagenes_bala
+        self.imagenes_explosion = imagenes_explosion
+        self.lista_balas = []
+        self.puede_disparar = puede_disparar
+        
+        self.sonido_explosion_disparo = pygame.mixer.Sound("source/Recursos/musica/explosion_bala.wav")
         
         self.hitbox_enemigo = obtener_rectangulos(self.posicion)
     
     
-    def actualizar(self):
+    def actualizar(self,lista_plataformas,personaje):
         if self.tipo == 'caminante':
             self.mover_horizontalmente()
         elif self.tipo == "volador":
@@ -325,6 +331,10 @@ class Enemigo:
         if self.anim_counter >= self.anim_speed:
             self.anim_counter = 0
             self.anim_index = (self.anim_index + 1) % len(self.imagenes_enemigo)
+        
+        
+        if self.puede_disparar:
+            self.actualizar_bala(lista_plataformas,personaje)
         
         self.hitbox_enemigo = obtener_rectangulos(self.posicion)
     
@@ -339,6 +349,7 @@ class Enemigo:
             if self.limites_horizontales[0] is not None and self.posicion.left <= self.limites_horizontales[0]:
                 self.direccion = 'derecha'
     
+    
     def mover_verticalmente(self):
         if self.direccion_y == 'arriba':
             if self.limites_verticales[0] is not None and self.posicion.top > self.limites_verticales[0]:
@@ -351,12 +362,55 @@ class Enemigo:
             else:
                 self.direccion_y = 'arriba'
     
+    
     def dibujar(self, pantalla):
-        
         if self.direccion == 'derecha':
             pantalla.blit(self.imagenes_enemigo[self.anim_index], self.posicion.topleft)
         else:
             pantalla.blit(pygame.transform.flip(self.imagenes_enemigo[self.anim_index], True, False), self.posicion.topleft)
+    
+    
+    def disparar(self):
+        if self.puede_disparar and self.direccion == 'derecha':
+            bala = Disparo(self.posicion.right, self.posicion.centery, 'derecha', self.imagenes_bala,self.imagenes_explosion)
+        else:
+            bala = Disparo(self.posicion.left, self.posicion.centery, 'izquierda', self.imagenes_bala,self.imagenes_explosion)
+        self.lista_balas.append(bala)
+    
+    def actualizar_bala(self,lista_plataformas,personaje):
+        for bala in self.lista_balas:
+            if bala.actualizar_balas():
+                self.lista_balas.remove(bala)
+                self.disparar()
+                continue
+            
+            if detectar_colisiones(bala.rect, personaje.hitbox_enemigo['main']):
+                if not bala.explota:
+                    bala.explota = True
+                    personaje.restar_score(100)
+                    self.sonido_explosion_disparo.set_volume(0.05)
+                    self.sonido_explosion_disparo.play()
+                    self.disparar()
+                    
+            
+            for plataforma in lista_plataformas:
+                if detectar_colisiones(bala.rect, plataforma.hitbox_plataforma['main']):
+                    if not bala.explota:  
+                        bala.explota = True  
+                        self.sonido_explosion_disparo.set_volume(0.05)
+                        self.sonido_explosion_disparo.play()
+                        self.disparar()
+            
+            if bala.rect.x < 0 or bala.rect.x > 800:
+                self.lista_balas.remove(bala)
+                self.disparar()
+                self.puede_disparar = True
+    
+    def dibujar_bala(self,pantalla):
+        for bala in self.lista_balas:
+            bala.dibujar_bala(pantalla)
+    
+    
 
 
 class Plataforma:
@@ -389,8 +443,6 @@ class Trampa:
             if self.anim_counter >= self.anim_speed:
                 self.anim_counter = 0
                 self.anim_index += 1
-                
-                
                 if self.anim_index >= len(self.imagenes_trampa):
                     self.anim_index = 0  
                     self.cooldown = True
@@ -432,6 +484,7 @@ class PowerUp:
         self.anim_speed = 15
         self.anim_counter = 0
         self.activo = True
+        self.aumento_vel_y_salto = False
     
     
     
@@ -453,20 +506,19 @@ class PowerUp:
     def aplicar_efecto(self, personaje):
         if self.tipo == "vida_extra":
             personaje.recoger_corazon_extra()
-            print(personaje.vidas)
-        elif self.tipo == "aumento_velocidad":
+            self.activo = False
+        elif self.tipo == "aumento_vel_y_salto":
+            self.aumento_vel_y_salto = True
             personaje.velocidad_x += 1
-        # elif self.tipo == "invulnerabilidad":
-        #     personaje.invulnerabilidad_tiempo = pygame.time.get_ticks() + 5000  # 5 segundos
-        self.activo = False
+            personaje.potencia_salto -= 1
+            personaje.velocidad_caida += 1
+            self.activo = False
     
     
     def detectar_colision(self, personaje,lista_powerups):
-        
-        for powerup in lista_powerups:
             if self.activo and detectar_colisiones(personaje.hitbox_personaje['main'], self.rect_powerup):
                 self.aplicar_efecto(personaje)
                 self.activo = False
-                lista_powerups.remove(powerup)
+                lista_powerups.remove(self)
             else:
                 self.activo = True
