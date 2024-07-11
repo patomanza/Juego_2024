@@ -6,7 +6,7 @@ from colisiones import *
 from rectangulos import *
 from modo_debug import *
 from game_over import *
-from clases import Personaje,Enemigo,Plataforma
+from clases import Personaje,Enemigo,Plataforma,Trampa,PowerUp
 
 def pantalla_inicio(botones):
     continuar = True
@@ -61,8 +61,7 @@ pygame.init()
 piso = pygame.Rect(0,510,160,90)
 lados_piso = obtener_rectangulos(piso)
 
-# piso_3 = pygame.Rect(480,510,420,90)
-# lados_piso_3 = obtener_rectangulos(piso_3)
+
 
 #PATANLLA Y CLOCK FRAMES
 pantalla = pygame.display.set_mode(SCREEN_SIZE)
@@ -80,29 +79,56 @@ pantalla_inicio(botones_inicio)
 
 mi_personaje = Personaje((posicion_x,posicion_y))
 
-esqueleto = Enemigo((32,32),(360,300),'caminante',esqueleto_camina_der,(347,480))
-lizard = Enemigo((32,32),(770,480),"estatico",lizard_dispara_der)
-fliying_eye = Enemigo((48,48),(400,400),"volador",ojo_volador,(None,None),(340,500))
 
-lista_enemigos = [esqueleto,lizard,fliying_eye]
+esqueleto = Enemigo((32,32),(340,223),'caminante',esqueleto_camina_der,(315,455))
+lizard = Enemigo((32,32),(770,478),"estatico",lizard_dispara)
 
-plataforma_1 = Plataforma((133,16),(347,330))
-plataforma_2 = Plataforma((53,16),(294,450))
+
+fliying_eye_1 = Enemigo((48,48),(484,370),"volador",ojo_volador,(None,None),(260,460))
+fliying_eye_2 = Enemigo((48,48),(298,370),"volador",ojo_volador,(None,None),(260,460))
+
+
+lista_enemigos = [esqueleto,lizard,fliying_eye_1,fliying_eye_2]
+
+
+plataforma_1 = Plataforma((133,16),(321,255))
+plataforma_2 = Plataforma((53,16),(294,450))    
+plataforma_3 = Plataforma((54,16),(480,450))
+plataforma_4 = Plataforma((27,16),(586,345))
+plataforma_5 = Plataforma((27,16),(161,345))
+plataforma_6 = Plataforma((27,16),(534,255))
+plataforma_7 = Plataforma((27,16),(214,255))
+plataforma_8 = Plataforma((135,16),(0,255))
+plataforma_9 = Plataforma((160,16),(640,255))
+
+
 
 piso_2 = Plataforma((80,90),(375,510))
-piso_3 = Plataforma((240,90),(640,510))
+piso_3 = Plataforma((160,90),(640,510))
+
 
 rectangulo_escalon_izq_1 = Plataforma((28,120),(160,480))
 rectangulo_escalon_izq_2 = Plataforma((54,150),(187,450))
 rectangulo_escalon_izq_3 = Plataforma((28,180),(240,420))
 
+
 rectangulo_escalon_der_1 = Plataforma((28,180),(560,420))
 rectangulo_escalon_der_2 = Plataforma((28,150),(587,450))
 rectangulo_escalon_der_3 = Plataforma((26,120),(614,480))
 
-lista_plataformas = [plataforma_1,plataforma_2,piso_2,piso_3,
-                    rectangulo_escalon_izq_1,rectangulo_escalon_izq_2,rectangulo_escalon_izq_3,
-                    rectangulo_escalon_der_1,rectangulo_escalon_der_2,rectangulo_escalon_der_3]
+
+lista_plataformas = [plataforma_1,plataforma_2,plataforma_3,plataforma_4,plataforma_5,
+                    plataforma_6,plataforma_7,plataforma_8,plataforma_9,
+                    piso_2,piso_3,rectangulo_escalon_izq_1,rectangulo_escalon_izq_2,
+                    rectangulo_escalon_izq_3,rectangulo_escalon_der_1,rectangulo_escalon_der_2,rectangulo_escalon_der_3]
+
+
+trampa_pinchos = Trampa((80,32),(374,485),spikes)
+lista_trampas = [trampa_pinchos]
+
+
+corazon_extra = PowerUp((16,16),(405,485),"vida_extra",corazon_extra)
+lista_powerups = [corazon_extra]
 
 
 is_running = True
@@ -130,17 +156,28 @@ while is_running:
     rectangulos_pantalla = limites_pantalla(pantalla)
     keys = pygame.key.get_pressed()
     
-    mi_personaje.actualizar(keys, rectangulos_pantalla)
+    mi_personaje.actualizar(keys, rectangulos_pantalla,lista_enemigos,lista_plataformas)
     mi_personaje.animar(pantalla)
     mi_personaje.aplicar_gravedad(lados_piso,lista_plataformas)
     mi_personaje.dibujar_balas(pantalla)
     mi_personaje.detectar_colision_enemigo(lista_enemigos)
     mi_personaje.actualizar_vida(pantalla)
-    mi_personaje.dibujar_score(pantalla)
+    mi_personaje.dibujar_score(pantalla)    
     
     for enemigo in lista_enemigos:
         enemigo.actualizar()
         enemigo.dibujar(pantalla)
+
+    for trampa in lista_trampas:
+        trampa.actualizar()
+        trampa.dibujar(pantalla)
+        trampa.detectar_colision(mi_personaje)
+    
+    for powerup in lista_powerups:
+        powerup.actualizar()
+        powerup.dibujar(pantalla)
+        powerup.detectar_colision(mi_personaje,lista_powerups)
+        
     
     
     if get_modo():
@@ -159,17 +196,39 @@ while is_running:
         # for lado in esqueleto.hitbox_enemigo:
         #     pygame.draw.rect(pantalla,"red",esqueleto.hitbox_enemigo[lado],1)
         
-        # for lado in lizard.hitbox_enemigo:
-        #     pygame.draw.rect(pantalla,"red",lizard.hitbox_enemigo[lado],1)
+        for lado in lizard.hitbox_enemigo:
+            pygame.draw.rect(pantalla,"red",lizard.hitbox_enemigo[lado],1)
         
         # for lado in fliying_eye.hitbox_enemigo:
         #     pygame.draw.rect(pantalla,"red",fliying_eye.hitbox_enemigo[lado],1)
         
-        for lado in plataforma_1.hitbox_plataforma:
-            pygame.draw.rect(pantalla,"red",plataforma_1.hitbox_plataforma[lado],1)
+        
+        for lado in plataforma_4.hitbox_plataforma:
+            pygame.draw.rect(pantalla,"red",plataforma_4.hitbox_plataforma[lado],1)
         
         for lado in plataforma_2.hitbox_plataforma:
             pygame.draw.rect(pantalla,"red",plataforma_2.hitbox_plataforma[lado],1)
+        
+        for lado in plataforma_3.hitbox_plataforma:
+            pygame.draw.rect(pantalla,"red",plataforma_3.hitbox_plataforma[lado],1)
+        
+        for lado in plataforma_1.hitbox_plataforma:
+            pygame.draw.rect(pantalla,"red",plataforma_1.hitbox_plataforma[lado],1)
+        
+        for lado in plataforma_5.hitbox_plataforma:
+            pygame.draw.rect(pantalla,"red",plataforma_5.hitbox_plataforma[lado],1)
+        
+        for lado in plataforma_6.hitbox_plataforma:
+            pygame.draw.rect(pantalla,"red",plataforma_6.hitbox_plataforma[lado],1)
+            
+        for lado in plataforma_7.hitbox_plataforma:
+            pygame.draw.rect(pantalla,"red",plataforma_7.hitbox_plataforma[lado],1)
+        
+        for lado in plataforma_8.hitbox_plataforma:
+            pygame.draw.rect(pantalla,"red",plataforma_8.hitbox_plataforma[lado],1)
+        
+        for lado in plataforma_9.hitbox_plataforma:
+            pygame.draw.rect(pantalla,"red",plataforma_9.hitbox_plataforma[lado],1)
         
         
         for lado in rectangulo_escalon_der_1.hitbox_plataforma:
@@ -180,6 +239,16 @@ while is_running:
         
         for lado in rectangulo_escalon_der_3.hitbox_plataforma:
             pygame.draw.rect(pantalla,"white",rectangulo_escalon_der_3.hitbox_plataforma[lado],1)
+        
+        
+        for lado in rectangulo_escalon_izq_1.hitbox_plataforma:
+            pygame.draw.rect(pantalla,"red",rectangulo_escalon_izq_1.hitbox_plataforma[lado],1)
+        
+        for lado in rectangulo_escalon_izq_2.hitbox_plataforma:
+            pygame.draw.rect(pantalla,"red",rectangulo_escalon_izq_2.hitbox_plataforma[lado],1)
+        
+        for lado in rectangulo_escalon_izq_3.hitbox_plataforma:
+            pygame.draw.rect(pantalla,"white",rectangulo_escalon_izq_3.hitbox_plataforma[lado],1)
     
     
     texto_timer_surface = fuente_timer.render(texto_timer, True, (255, 0, 0))

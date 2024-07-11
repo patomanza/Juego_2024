@@ -16,7 +16,7 @@ def reescalar_imagen(lista_imagenes, tamaño):
 fondo = pygame.image.load("source/Recursos/fondos/Back.png")
 fondo = pygame.transform.scale(fondo,SCREEN_SIZE)
 
-mapa = pygame.image.load("source/Recursos/fondos/MAPA6.png")
+mapa = pygame.image.load("source/Recursos/fondos/MAPA.png")
 mapa = pygame.transform.scale(mapa,SCREEN_SIZE)
 
 start_button = pygame.image.load("source/Recursos/Botones/Start_Button.png")
@@ -32,6 +32,8 @@ muted_music = pygame.image.load("source/Recursos/Botones/Music_mute.png")
 music_button = pygame.image.load("source/Recursos/Botones/Music_Button.png")
 
 corazon_full = pygame.image.load("source/Recursos/GUI/Heart_full.png")
+
+corazon_extra = pygame.image.load("source/Recursos/GUI/corazon_extra.png")
 
 corazon_vacio = pygame.image.load("source/Recursos/GUI/Heart_vacio.png")
 
@@ -72,13 +74,6 @@ personaje_dispara = [pygame.image.load("source/Recursos/Personaje/shoot/shoot_1.
 
 personaje_dispara_izq = girar_imagenes(personaje_dispara,True,False)
 
-
-balas = [pygame.image.load("source/Recursos/Personaje/shoot/bullet_1.png"),
-         pygame.image.load("source/Recursos/Personaje/shoot/bullet_2.png"),
-         pygame.image.load("source/Recursos/Personaje/shoot/bullet_3.png"),
-         pygame.image.load("source/Recursos/Personaje/shoot/bullet_4.png")]
-
-
 dict_animaciones = {'quieto_der': personaje_idle,
                     'quieto_izq': personaje_idle_izq,
                     'corre_der': personaje_corre,
@@ -90,6 +85,18 @@ dict_animaciones = {'quieto_der': personaje_idle,
                     }
 
 
+balas = [pygame.image.load("source/Recursos/Personaje/shoot/bullet_1.png"),
+         pygame.image.load("source/Recursos/Personaje/shoot/bullet_2.png"),
+         pygame.image.load("source/Recursos/Personaje/shoot/bullet_3.png"),
+         pygame.image.load("source/Recursos/Personaje/shoot/bullet_4.png")]
+
+explosion_bala = [pygame.image.load("source/Recursos/Personaje/shoot/explosion_bala_1.png"),
+                  pygame.image.load("source/Recursos/Personaje/shoot/explosion_bala_2.png"),
+                  pygame.image.load("source/Recursos/Personaje/shoot/explosion_bala_3.png"),
+                  pygame.image.load("source/Recursos/Personaje/shoot/explosion_bala_4.png")]
+
+
+
 esqueleto_camina_der = [pygame.image.load("source/Recursos/Enemigos/Eskeleton/Skeleton-Walk/skeleton_camina_1.png"),
                         pygame.image.load("source/Recursos/Enemigos/Eskeleton/Skeleton-Walk/skeleton_camina_2.png"),
                         pygame.image.load("source/Recursos/Enemigos/Eskeleton/Skeleton-Walk/skeleton_camina_3.png"),
@@ -99,29 +106,39 @@ esqueleto_camina_der = [pygame.image.load("source/Recursos/Enemigos/Eskeleton/Sk
                         pygame.image.load("source/Recursos/Enemigos/Eskeleton/Skeleton-Walk/skeleton_camina_7.png"),
                         pygame.image.load("source/Recursos/Enemigos/Eskeleton/Skeleton-Walk/skeleton_camina_8.png")]
 
-esqueleto_camina_izq = girar_imagenes(esqueleto_camina_der,True,False)
 
 ojo_volador = [pygame.image.load("source/Recursos/Enemigos/Fliying_eye/flying_eye_1.png"),
                pygame.image.load("source/Recursos/Enemigos/Fliying_eye/flying_eye_2.png"),
                pygame.image.load("source/Recursos/Enemigos/Fliying_eye/flying_eye_3.png"),
                pygame.image.load("source/Recursos/Enemigos/Fliying_eye/flying_eye_4.png")]
 
-lizard_dispara_der = [pygame.image.load("source/Recursos/Enemigos/lizard shoots/lizard_shoot_1.png"),
+lizard_dispara = [pygame.image.load("source/Recursos/Enemigos/lizard shoots/lizard_shoot_1.png"),
                       pygame.image.load("source/Recursos/Enemigos/lizard shoots/lizard_shoot_2.png"),
                       pygame.image.load("source/Recursos/Enemigos/lizard shoots/lizard_shoot_2.png"),
                       pygame.image.load("source/Recursos/Enemigos/lizard shoots/lizard_shoot_2.png"),
                       pygame.image.load("source/Recursos/Enemigos/lizard shoots/lizard_shoot_3.png"),
                       pygame.image.load("source/Recursos/Enemigos/lizard shoots/lizard_shoot_4.png")]
 
-lizard_dispara_izq = girar_imagenes(lizard_dispara_der,True,False)
-
 lizard_fireball = [pygame.image.load("source/Recursos/Enemigos/Fireball/fireball_1.png"),
                    pygame.image.load("source/Recursos/Enemigos/Fireball/fireball_2.png"),
                    pygame.image.load("source/Recursos/Enemigos/Fireball/fireball_3.png"),
                    pygame.image.load("source/Recursos/Enemigos/Fireball/fireball_4.png")]
 
+fireball_explota = [pygame.image.load("source/Recursos/Enemigos/Fireball/explosion_fireball_1.png"),
+                    pygame.image.load("source/Recursos/Enemigos/Fireball/explosion_fireball_2.png"),
+                    pygame.image.load("source/Recursos/Enemigos/Fireball/explosion_fireball_3.png"),
+                    pygame.image.load("source/Recursos/Enemigos/Fireball/explosion_fireball_4.png")]
 
 
+
+spikes = [pygame.image.load("source/Recursos/Trampas/Spikes/spike_1.png"),
+          pygame.image.load("source/Recursos/Trampas/Spikes/spike_2.png"),
+          pygame.image.load("source/Recursos/Trampas/Spikes/spike_3.png"),
+          pygame.image.load("source/Recursos/Trampas/Spikes/spike_4.png"),
+          pygame.image.load("source/Recursos/Trampas/Spikes/spike_5.png"),
+          pygame.image.load("source/Recursos/Trampas/Spikes/spike_6.png"),
+          pygame.image.load("source/Recursos/Trampas/Spikes/spike_7.png"),
+          pygame.image.load("source/Recursos/Trampas/Spikes/spike_8.png")]
 
 
 
